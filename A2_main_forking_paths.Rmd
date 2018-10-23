@@ -74,7 +74,7 @@ run_dropone       <- 1 # Set to 1 to run drop-one SEM analysis.
 run_facscores     <- 1 # Set to 1 to run factor scores plot after drop one analysis (N.B. Only runs if run_dropone is also 1). 
 
 # These toggles are used when generating the write-up section
-tabcount         <- 0  #Start of counter for tables in Results section
+tabcount         <- 1  #Start of counter for tables in Results section
 figcount         <- 5  #Start of counter for figs in Results section
 
 ########################################################################################################
@@ -143,15 +143,13 @@ if(run_participants==1){ #See run_participants toggle
 This section reads in the A2_Behavioural_Data.csv file from OSF (<https://osf.io/wznbv/>) and reports behavioural results. Statistics on the number of words spoken in Tasks A and D are also calculated.
 
 ```{r behaviouraldata}
+behavdat<-read.csv('https://osf.io/wznbv/download') # Downloads A2_Behavioural_Data.csv from OSF Project
+
+# Only include participants in particdat
+behavdat <- behavdat[
+  which(is.element(behavdat$Filename, particdat$ID)), ]
 
 if (run_behavioural==1){ #See run_behavioural toggle
-  
-  behavdat<-read.csv('https://osf.io/wznbv/download') # Downloads A2_Behavioural_Data.csv from OSF Project
-  
-  # Only include participants in particdat
-  behavdat <- behavdat[
-    which(is.element(behavdat$Filename, particdat$ID)), ]
-
   #NB Do not need to specify exclusions by sample or handedness here.
   #Participant ID has already incorporated there
   
@@ -512,7 +510,7 @@ if (run_pirate == 1){ # See run_pirate toggle
 
   
   # Mark significant differences (excluding outlier data) with black astrisks
-  text(xmarker_index$x_nums, y=as.numeric(tdf[,3]), labels=tdf[,4],font=2, cex=1.3)
+  text(xmarker_index$x_nums, y=as.numeric(tdf[,4]), labels=tdf[,5],font=2, cex=1.3)
 
   dev.off()
 }
@@ -645,10 +643,9 @@ if (tryreorder==1){ #See tryreorder toggle
   alltaskall<-alltaskall[,nuorder]
   mylabels<-mylabels[nuorder]
   myshortlab<-myshortlab[nuorder[1:length(myshortlab)]]
-    mylonglab<-mylonglab[nuorder[1:length(mylonglab)]]
-  myfixed<-myshortlab[1]
+  mylonglab<-mylonglab[nuorder[1:length(mylonglab)]]
 }
-
+myfixed<-myshortlab[1]
 ```
 
 
@@ -1137,8 +1134,6 @@ paths_table$CI_Factor1[2:6]<-paste0(round(loCI1,2),' to ',round(hiCI1,2))
 paths_table$CI_Factor2[2:6]<-paste0(round(loCI2,2),' to ',round(hiCI2,2))
 paths_table[1,c(3,5)]<-'fixed'
 
-table_row_order <- c(2,3,4,1,5,6)
-paths_table <- paths_table[table_row_order, ]
 
 ```
 
@@ -1295,8 +1290,6 @@ sessionInfo()
 ***
 The following sections are reported in the manuscript Results section.
 ***
-
-
 All data are available on OSF (https://osf.io/s9kx6/). Results from the pre-registered analysis protocol (i.e., using the first 30 participants only) are shown in Supplementary Materials. As noted above, the factor solution from this sample was unstable and unduly influenced by one left-hander. We report here the results based on the final sample of 30 right-handers and 7 left-handers, which gives a stable solution, and we include exploratory analyses relating the findings to handedness. The LI values reported here are based on the mean difference between left and right CBFV, as this gives normally distributed variables, but the results are highly similar when the non-normal peak-based LIs are used instead. The analysis script provided on OSF (https://osf.io/tkpm2/) facilitates comparisons between different analytic pathways.
 
 ## Behavioural results
@@ -1307,7 +1300,7 @@ For decision making tasks (B, C, E and F), the accuracy and RT of each response,
 The Phonological Decision and Sentence Comprehension tasks (tasks B and E) showed evidence of practice effects, as both accuracy and reaction times improved, and the number of omitted responses fell from Session 1 to Session 2.
 
 
-**Table `r (tabcount+1)`**
+**Table `r tabcount`**
 Behavioural data for tasks B, C, E and F. The table shows mean percentage accuracy and reaction times (with SD), and results of t-tests comparing Session 1 with Session 2 for each measure. The number of omitted responses is reported as a percentage of all events. B = Phonological Decision; C = Semantic Decision; E = Sentence Comprehension; F = Syntactic Decision. 
 ```{r tab1, echo=FALSE}
 thistab<-t(behavdf)
@@ -1340,7 +1333,7 @@ Correlation matrix for LIs from the six language tasks given on two occasions.
 
 
 ## Structural Equation Modelling
-`r tabcount<-tabcount+1`
+`r tabcount<-tabcount`
 The LI data were entered into the SEM analysis to test hypotheses about the group mean LI values and covariances in LI values across subjects. Table `r tabcount` summarises the SEM results.
 
 ### Step 1: Testing Stability of LI Values
